@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Text, Button } from 'react-native'
+import PropTypes from 'prop-types'
 import Timer from './Timer'
 
 export default class TimerContainer extends React.Component {
@@ -76,10 +77,10 @@ export default class TimerContainer extends React.Component {
 
   render() {
     return (
-      <View>
-        <Text>{this.props.isStudyTime ? 'Study!' : 'Break!'}</Text>
+      <View style={styles.container}>
+        <Text style={styles.text}>{this.props.isStudyTime ? 'Study!' : 'Break!'}</Text>
         <Timer timeLeft={this.state.timeLeft}></Timer>
-        <View>
+        <View style={styles.buttons}>
           <Button onPress={this.onStart} title='Start' />
           <Button onPress={this.onStop} title='Stop' />
           <Button onPress={this.onReset} title='Reset' />
@@ -88,3 +89,29 @@ export default class TimerContainer extends React.Component {
     )
   }
 }
+
+TimerContainer.propTypes = {
+  studyTime: PropTypes.number.isRequired,
+  breakTime: PropTypes.number.isRequired,
+  isStudyTime: PropTypes.bool.isRequired,
+  onTimerEnd: PropTypes.func.isRequired,
+}
+
+const styles = StyleSheet.create({
+  buttons: {
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: 250,
+  },
+  container: {
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    flex: 1,
+    justifyContent: 'center',
+  },
+  text: {
+    color: '#FFF',
+    fontSize: 32,
+  }
+})
