@@ -1,44 +1,90 @@
 import React from 'react'
-import { StyleSheet, View, Text, } from 'react-native'
+import { StyleSheet, View, Text, Button } from 'react-native'
 import Timer from './Timer'
 
 export default class TimerContainer extends React.Component {
   state = {
-    defaultTimer: this.props.isStudyTime ? this.props.studyTime : this.props.breakTime,
-    timeLeft: 0
+    initialTimer: this.props.isStudyTime ? this.props.studyTime : this.props.breakTime,
+    timeLeft: this.initializeTimer(),
+    timerRunning: false,
   }
 
   componentDidMount() {
-    let timerEndTime = new Date(Date.now() + this.state.defaultTimer * 60000)
-    let currentTime = new Date()
+    this.timerID = setInterval(this.decrement, 1000)
     this.setState({
-      timeLeft: timerEndTime - currentTime,
+      timerRunning: true
     })
+  }
 
-    setInterval(this.decrement, 1000)
+  componentWillReceiveProps() {
+    setTimeout(
+      () => {this.setState({
+        initialTimer: this.props.isStudyTime ? this.props.studyTime : this.props.breakTime,
+        timeLeft: this.initializeTimer(),
+      })},
+      1000
+    )
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID)
+  }
+
+  initializeTimer() {
+    let timer = this.props.isStudyTime ? this.props.studyTime : this.props.breakTime
+    let timerEndTime = new Date(Date.now() + timer * 60000)
+    let currentTime = new Date()
+    return timerEndTime - currentTime
   }
 
   decrement = () => {
-    this.setState(prevState => ({
-      timeLeft: prevState.timeLeft - 1000
-    }))
+    if (this.state.timeLeft < 1000) {
+      this.props.onTimerEnd()
+      this.setState({
+        initialTimer: this.props.isStudyTime ? this.props.studyTime : this.props.breakTime,
+        timeLeft: this.initializeTimer(),
+      })
+    } else {
+      this.setState(prevState => ({
+        timeLeft: prevState.timeLeft - 1000
+      }))
+    }
+  }
+
+  onReset = () => {
+    this.setState({
+      initialTimer: this.props.isStudyTime ? this.props.studyTime : this.props.breakTime,
+      timeLeft: this.initializeTimer(),
+    })
+  }
+
+  onStart = () => {
+    if (!this.state.timerRunning) {
+      this.timerID = setInterval(this.decrement, 1000)
+    }
+    this.setState({
+      timerRunning: true
+    })
+  }
+
+  onStop = () => {
+    clearInterval(this.timerID)
+    this.setState({
+      timerRunning: false
+    })
   }
 
   render() {
-    if (this.props.isStudyTime) {
-      return (
+    return (
+      <View>
+        <Text>{this.props.isStudyTime ? 'Study!' : 'Break!'}</Text>
+        <Timer timeLeft={this.state.timeLeft}></Timer>
         <View>
-          <Text>Study!</Text>
-          <Timer timeLeft={this.state.timeLeft}></Timer>
+          <Button onPress={this.onStart} title='Start' />
+          <Button onPress={this.onStop} title='Stop' />
+          <Button onPress={this.onReset} title='Reset' />
         </View>
-      )
-    } else {
-      return (
-        <View>
-          <Text>Break!</Text>
-          <Timer></Timer>
-        </View>
-      )
-    }
+      </View>
+    )
   }
 }

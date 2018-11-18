@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import {Constants} from 'expo'
+import Vibrate from './utils/vibrate'
 import TimeSelector from './Components/TimeSelector'
 import TimerContainer from './Components/TimerContainer'
 
@@ -23,6 +24,13 @@ export default class App extends React.Component {
     })
   }
 
+  onTimerEnd = () => {
+    this.setState(prevState => ({
+      isStudyTime: !prevState.isStudyTime
+    }))
+    Vibrate()
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -36,7 +44,8 @@ export default class App extends React.Component {
         <TimerContainer 
           studyTime={this.state.studyTime}
           breakTime={this.state.breakTime}
-          isStudyTime={this.state.isStudyTime}>
+          isStudyTime={this.state.isStudyTime}
+          onTimerEnd={this.onTimerEnd}>
         </TimerContainer>
       </View>
     )
