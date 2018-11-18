@@ -5,7 +5,7 @@
     "slug": "project1",
     "privacy": "public",
     "sdkVersion": "25.0.0",
-    "platforms": "android",
+    "platforms": ["android"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
