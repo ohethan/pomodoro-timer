@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, Text, Picker } from 'react-native'
 import PropTypes from 'prop-types'
 
-export default TimeSelector = props => (
+const TimeSelector = props => (
   <View style={styles.container}>
     <View style={styles.group}>
       <Text style={styles.text}>Study time</Text>
@@ -65,3 +65,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 })
+
+export default TimeSelector
